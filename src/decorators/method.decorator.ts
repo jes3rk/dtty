@@ -26,5 +26,14 @@ const methodDecorator =
     }
   };
 
+export const Delete = (path: string): MethodDecorator =>
+  methodDecorator({ path, method: "delete" });
+
 export const Get = (path: string): MethodDecorator =>
   methodDecorator({ path, method: "get" });
+
+export const Post = (path: string): MethodDecorator =>
+  methodDecorator({ path, method: "post" });
+
+export const Put = (path: string): MethodDecorator =>
+  methodDecorator({ path, method: "put" });
