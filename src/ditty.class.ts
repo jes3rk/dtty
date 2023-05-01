@@ -2,17 +2,23 @@ import { ExecutionContext } from "@cloudflare/workers-types";
 import { Router } from "itty-router";
 import "reflect-metadata";
 import { ContainerInstance } from "typedi";
-import { ROUTER_TOKEN } from "./tokens";
-import { ControllerEndpointMetadata } from "./types";
 import { CONTROLLER_ENDPOINTS_META, CONTROLLER_META } from "./constants";
-
+import { Logger } from "./logger";
+import { LOGGER_TOKEN, ROUTER_TOKEN } from "./tokens";
+import { ControllerEndpointMetadata, RouterResponse } from "./types";
 
 export class Ditty {
   private container: ContainerInstance;
+  private logger: Logger;
 
   constructor() {
-    this.container = new ContainerInstance('');
-    this.container.set(ROUTER_TOKEN, Router())
+    this.container = new ContainerInstance("ditty");
+    this.container.set(ROUTER_TOKEN, Router());
+    this.container.set(LOGGER_TOKEN, new Logger());
+    // Internal mounts
+    this.mountServices();
+
+    this.logger = this.container.get(LOGGER_TOKEN);
   }
 
   public async handle(
@@ -21,19 +27,27 @@ export class Ditty {
     ctx: ExecutionContext,
   ): Promise<Response> {
     const router = this.container.get(ROUTER_TOKEN);
-    const rawResponse = await router.handle(req, env, ctx);
-    return new Response(JSON.stringify(rawResponse));
+    const rawResponse: RouterResponse = await router.handle(req, env, ctx);
+    return new Response(JSON.stringify(rawResponse.data), {
+      status: rawResponse.status,
+    });
   }
 
-  public registerControllers(...controllers: any[]): void {
-    controllers.forEach((c) => {
+  public mountServices(...services: any[]): void {
+    services.forEach((s) => {
       this.container.set({
-        id: c,
-        type: c,
+        id: s,
+        type: s,
         multiple: false,
         eager: false,
         transient: false,
       });
+    });
+  }
+
+  public registerControllers(...controllers: any[]): void {
+    this.mountServices(...controllers);
+    controllers.forEach((c) => {
       const path = Reflect.getMetadata(CONTROLLER_META, c.constructor);
       if (!path) return;
       const router = this.container.get(ROUTER_TOKEN);
@@ -42,12 +56,17 @@ export class Ditty {
         c,
       );
       endpoints.forEach((e) => {
-        const formattedPath = path + e.path.replace(/$\//, '');
-        router[e.method](formattedPath, async (req) => {
-          const controller = this.container.get(c)
-          return controller[e.propertyKey](req);
-        });
-        console.log(`Mounted route: [${e.method.toUpperCase()}] ${formattedPath}`)
+        const formattedPath = path + e.path.replace(/$\//, "");
+        router[e.method](
+          formattedPath,
+          async (req): Promise<RouterResponse<any>> => {
+            const controller = this.container.get(c);
+            return { data: await controller[e.propertyKey](req), status: 200 };
+          },
+        );
+        this.logger.log(
+          `Mounted route: [${e.method.toUpperCase()}] ${formattedPath}`,
+        );
       });
     });
   }

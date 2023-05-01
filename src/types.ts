@@ -10,3 +10,8 @@ export enum ControllerMethod {
   post = "post",
   put = "put",
 }
+
+export interface RouterResponse<T = any> {
+  data: T;
+  status: number;
+}
