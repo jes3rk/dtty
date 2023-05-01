@@ -1,4 +1,7 @@
 export class Logger {
+  constructor() {
+    console.log("Mount logger");
+  }
   public debug(...message: any[]) {
     this._console("debug", message);
   }

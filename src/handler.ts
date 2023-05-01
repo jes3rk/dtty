@@ -1,9 +1,9 @@
-import { IRequest } from "itty-router";
 import { Constructable, Inject } from "typedi";
 import { CONTAINER_REF } from "./tokens";
 import {
   ContainerRef,
   ControllerEndpointMetadata,
+  IttyRequest,
   RouterResponse,
 } from "./types";
 
@@ -15,13 +15,23 @@ export class Handler {
   public async handle(
     controllerToken: Constructable<any>,
     endpoint: ControllerEndpointMetadata,
-    req: IRequest,
+    req: IttyRequest,
   ): Promise<RouterResponse> {
-    return {
-      data: (await this.containerRef
+    let status: number;
+    let data: unknown;
+    try {
+      data = (await this.containerRef
         .get(controllerToken)
-        [endpoint.propertyKey](req)) as any,
-      status: 200,
-    };
+        [endpoint.propertyKey](req)) as any;
+      status = 200;
+    } catch (err) {
+      data = err;
+      status = 500;
+    } finally {
+      return {
+        data,
+        status,
+      };
+    }
   }
 }

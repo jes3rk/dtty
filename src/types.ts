@@ -1,3 +1,4 @@
+import { IRequest } from "itty-router";
 import { Constructable } from "typedi";
 
 export interface ControllerEndpointMetadata {
@@ -17,6 +18,8 @@ export interface ContainerRef {
   get<T>(token: Constructable<T>): T;
   getServices(): any[];
 }
+
+export type IttyRequest = IRequest & Request;
 
 export interface RouterResponse<T = any> {
   data: T;
