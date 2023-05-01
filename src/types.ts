@@ -1,5 +1,12 @@
 export interface ControllerEndpointMetadata {
   path: string;
   propertyKey: string | symbol;
-  method: "get" | "post" | "put" | "delete";
+  method: ControllerMethod;
+}
+
+export enum ControllerMethod {
+  delete = "delete",
+  get = "get",
+  post = "post",
+  put = "put",
 }

@@ -8,4 +8,9 @@ export class HealthController {
       status: "OK",
     };
   }
+
+  @Get('/req')
+  req(req: any) {
+    return req;
+  }
 }

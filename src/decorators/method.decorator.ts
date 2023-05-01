@@ -1,5 +1,5 @@
 import { CONTROLLER_ENDPOINTS_META } from "../constants";
-import { ControllerEndpointMetadata } from "../types";
+import { ControllerEndpointMetadata, ControllerMethod } from "../types";
 
 const methodDecorator =
   ({
@@ -7,16 +7,12 @@ const methodDecorator =
     path,
   }: Omit<ControllerEndpointMetadata, "propertyKey">): MethodDecorator =>
   (target, propertyKey) => {
-    if (Reflect.hasMetadata(CONTROLLER_ENDPOINTS_META, target)) {
+    if (Reflect.hasMetadata(CONTROLLER_ENDPOINTS_META, target.constructor)) {
       const existing: ControllerEndpointMetadata[] = Reflect.getMetadata(
         CONTROLLER_ENDPOINTS_META,
-        target,
+        target.constructor,
       );
-      existing.push({
-        method,
-        path,
-        propertyKey,
-      });
+      Reflect.defineMetadata(CONTROLLER_ENDPOINTS_META, existing.concat({method, path, propertyKey}), target.constructor);
     } else {
       Reflect.defineMetadata(
         CONTROLLER_ENDPOINTS_META,
@@ -27,13 +23,13 @@ const methodDecorator =
   };
 
 export const Delete = (path: string): MethodDecorator =>
-  methodDecorator({ path, method: "delete" });
+  methodDecorator({ path, method: ControllerMethod.delete });
 
 export const Get = (path: string): MethodDecorator =>
-  methodDecorator({ path, method: "get" });
+  methodDecorator({ path, method: ControllerMethod.get });
 
 export const Post = (path: string): MethodDecorator =>
-  methodDecorator({ path, method: "post" });
+  methodDecorator({ path, method: ControllerMethod.post });
 
 export const Put = (path: string): MethodDecorator =>
-  methodDecorator({ path, method: "put" });
+  methodDecorator({ path, method: ControllerMethod.put });

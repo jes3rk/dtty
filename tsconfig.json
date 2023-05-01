@@ -12,7 +12,7 @@
     "incremental": true,
     "skipLibCheck": false,
     "outDir": "dist",
-    "types": ["@cloudflare/workers-types"]
+    "types": ["@cloudflare/workers-types", "@types/jest"]
   },
   "include": ["src", "testing"],
   "exclude": [".yarn"]
