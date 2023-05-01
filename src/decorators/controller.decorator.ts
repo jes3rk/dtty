@@ -6,5 +6,5 @@ import { CONTROLLER_META } from "../constants";
 export const Controller =
   (path?: string): ClassDecorator =>
   (target) => {
-    Reflect.defineMetadata(CONTROLLER_META, path, target.constructor);
+    Reflect.defineMetadata(CONTROLLER_META, path, target);
   };

@@ -1,11 +1,16 @@
 import { ExecutionContext } from "@cloudflare/workers-types";
 import { Router } from "itty-router";
 import "reflect-metadata";
-import { ContainerInstance } from "typedi";
+import { Constructable, ContainerInstance } from "typedi";
 import { CONTROLLER_ENDPOINTS_META, CONTROLLER_META } from "./constants";
+import { Handler } from "./handler";
 import { Logger } from "./logger";
-import { LOGGER_TOKEN, ROUTER_TOKEN } from "./tokens";
-import { ControllerEndpointMetadata, RouterResponse } from "./types";
+import { CONTAINER_REF, LOGGER_TOKEN, ROUTER_TOKEN } from "./tokens";
+import {
+  ContainerRef,
+  ControllerEndpointMetadata,
+  RouterResponse,
+} from "./types";
 
 export class Ditty {
   private container: ContainerInstance;
@@ -13,8 +18,18 @@ export class Ditty {
 
   constructor() {
     this.container = new ContainerInstance("ditty");
+    this.container.set<ContainerRef>(CONTAINER_REF, {
+      get: <T>(token: Constructable<T>) => this.container.get(token),
+      getServices: () => this.container["services"],
+    });
     this.container.set(ROUTER_TOKEN, Router());
     this.container.set(LOGGER_TOKEN, new Logger());
+    this.container.set({
+      id: Handler,
+      type: Handler,
+      transient: false,
+      eager: false,
+    });
     // Internal mounts
     this.mountServices();
 
@@ -48,22 +63,24 @@ export class Ditty {
   public registerControllers(...controllers: any[]): void {
     this.mountServices(...controllers);
     controllers.forEach((c) => {
-      const path = Reflect.getMetadata(CONTROLLER_META, c.constructor);
+      const path = Reflect.getMetadata(CONTROLLER_META, c);
       if (!path) return;
       const router = this.container.get(ROUTER_TOKEN);
       const endpoints: ControllerEndpointMetadata[] = Reflect.getMetadata(
         CONTROLLER_ENDPOINTS_META,
         c,
       );
+
       endpoints.forEach((e) => {
         const formattedPath = path + e.path.replace(/$\//, "");
         router[e.method](
           formattedPath,
           async (req): Promise<RouterResponse<any>> => {
-            const controller = this.container.get(c);
-            return { data: await controller[e.propertyKey](req), status: 200 };
+            const handler = this.container.get(Handler);
+            return handler.handle(c, e, req);
           },
         );
+
         this.logger.log(
           `Mounted route: [${e.method.toUpperCase()}] ${formattedPath}`,
         );

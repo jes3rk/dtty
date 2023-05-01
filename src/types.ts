@@ -1,3 +1,5 @@
+import { Constructable } from "typedi";
+
 export interface ControllerEndpointMetadata {
   path: string;
   propertyKey: string | symbol;
@@ -9,6 +11,11 @@ export enum ControllerMethod {
   get = "get",
   post = "post",
   put = "put",
+}
+
+export interface ContainerRef {
+  get<T>(token: Constructable<T>): T;
+  getServices(): any[];
 }
 
 export interface RouterResponse<T = any> {
