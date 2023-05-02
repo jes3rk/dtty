@@ -39,6 +39,14 @@ describe("ParamMapper", () => {
       expect(mapped).toHaveLength(1);
       expect(mapped[0]).toEqual(request.params.id);
     });
+    it("will return all params if no name is specified", () => {
+      const meta: ControllerParamMeta = {
+        type: ControllerParams.PARAM,
+      };
+      const mapped = mapper.mapTo([meta]);
+      expect(mapped).toHaveLength(1);
+      expect(mapped[0]).toMatchObject(request.params);
+    });
   });
 
   it("will map the REQUEST out", () => {

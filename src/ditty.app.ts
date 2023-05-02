@@ -40,6 +40,9 @@ export class Ditty {
     const rawResponse: RouterResponse = await router.handle(req, env, ctx);
     return new Response(JSON.stringify(rawResponse.data), {
       status: rawResponse.status,
+      headers: {
+        "content-type": "application/json",
+      },
     });
   }
 
@@ -64,7 +67,7 @@ export class Ditty {
       Reflect.getMetadata(APPLY_MIDDLEWARE_META, controllerToken) || [];
 
     endpoints.forEach((endpoint) => {
-      const fullPath = rootPath + endpoint.path.replace(/$\//, "");
+      const fullPath = rootPath + endpoint.path.replace(/\/$/, "");
 
       const endpointHandler =
         container.resolve(controllerToken)[endpoint.propertyKey];
