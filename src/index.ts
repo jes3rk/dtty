@@ -1,7 +1,11 @@
 import "reflect-metadata";
 export { inject as Inject } from "tsyringe";
+export { Body, Param, Request } from "./decorators/contoller-params.decorator";
 export { Controller } from "./decorators/controller.decorator";
 export { Injectable } from "./decorators/injectable.decorator";
 export { Delete, Get, Post, Put } from "./decorators/method.decorator";
 export { Ditty } from "./ditty.app";
+export type { Logger } from "./interfaces/logger.interface";
 export type { DittyMiddleware } from "./interfaces/middleware.interface";
+export { LOGGER_TOKEN } from "./tokens";
+export type { IttyRequest } from "./types";

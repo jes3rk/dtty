@@ -1,5 +1,6 @@
-import { Controller, Get } from "src";
+import { Controller, Get, IttyRequest } from "src";
 import { ApplyMiddleware } from "src/decorators/apply-middleware.decorator";
+import { Param, Request } from "src/decorators/contoller-params.decorator";
 import { LoggerMiddleware } from "./logger.middleware";
 
 @Controller("/health")
@@ -7,14 +8,16 @@ import { LoggerMiddleware } from "./logger.middleware";
 export class HealthController {
   @Get("/")
   @ApplyMiddleware(LoggerMiddleware)
-  healthCheck() {
+  healthCheck(@Request() req: IttyRequest) {
     return {
       status: "OK",
+      ev: req.method,
+      mine: "yours",
     };
   }
 
-  @Get("/req")
-  req(req: any) {
-    return req;
+  @Get("/:type")
+  req(@Param("type") type: string) {
+    return { type };
   }
 }

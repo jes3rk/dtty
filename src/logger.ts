@@ -1,10 +1,12 @@
 import { Injectable } from "./decorators/injectable.decorator";
+import { Logger } from "./interfaces/logger.interface";
 
 @Injectable()
-export class Logger {
-  // constructor() {
-  //   console.log("Mount logger");
-  // }
+export class DefaultLogger implements Logger {
+  private readonly name: string;
+  constructor() {
+    this.name = this.constructor.name;
+  }
   public debug(...message: any[]) {
     this._console("debug", message);
   }
@@ -22,6 +24,7 @@ export class Logger {
     console[method](
       new Date().toISOString(),
       `[${method.toUpperCase()}] --`,
+      `[${this.name}]`,
       ...message,
     );
   }

@@ -1,30 +1,34 @@
 import { ExecutionContext } from "@cloudflare/workers-types";
 import { Router, RouterType } from "itty-router";
-import { DependencyContainer, container } from "tsyringe";
+import { Logger } from "src";
+import { container } from "tsyringe";
 import { constructor } from "tsyringe/dist/typings/types";
 import {
   APPLY_MIDDLEWARE_META,
   CONTROLLER_ENDPOINTS_META,
   CONTROLLER_META,
+  CONTROLLER_PARAM_META,
 } from "./constants";
-import { Handler } from "./handler";
+import { DittyConfig } from "./interfaces/ditty-config.interface";
 import { DittyMiddleware } from "./interfaces/middleware.interface";
-import { Logger } from "./logger";
-import { ROUTER_TOKEN } from "./tokens";
+import { DefaultLogger } from "./logger";
+import { ParamMapper } from "./param-mapper";
+import { LOGGER_TOKEN, ROUTER_TOKEN } from "./tokens";
 import {
   ControllerEndpointMetadata,
+  ControllerParamMeta,
   IttyRequest,
   RouterResponse,
 } from "./types";
 
 export class Ditty {
-  private container: DependencyContainer;
   private logger: Logger;
 
-  constructor() {
-    this.container = container;
-    this.container.register(ROUTER_TOKEN, { useValue: Router() });
-    this.logger = this.container.resolve(Logger);
+  constructor(config: DittyConfig = {}) {
+    const { logger = DefaultLogger } = config;
+    container.register(ROUTER_TOKEN, { useValue: Router() });
+    container.register(LOGGER_TOKEN, { useClass: logger });
+    this.logger = container.resolve(LOGGER_TOKEN);
   }
 
   public async handle(
@@ -32,7 +36,7 @@ export class Ditty {
     env: Record<string, unknown>,
     ctx: ExecutionContext,
   ): Promise<Response> {
-    const router = this.container.resolve<RouterType>(ROUTER_TOKEN);
+    const router = container.resolve<RouterType>(ROUTER_TOKEN);
     const rawResponse: RouterResponse = await router.handle(req, env, ctx);
     return new Response(JSON.stringify(rawResponse.data), {
       status: rawResponse.status,
@@ -54,7 +58,7 @@ export class Ditty {
     );
     if (!endpoints || !Array.isArray(endpoints)) return;
 
-    const router = this.container.resolve<RouterType>(ROUTER_TOKEN);
+    const router = container.resolve<RouterType>(ROUTER_TOKEN);
 
     const controllerMiddleware: constructor<DittyMiddleware>[] =
       Reflect.getMetadata(APPLY_MIDDLEWARE_META, controllerToken) || [];
@@ -67,6 +71,9 @@ export class Ditty {
       const endpointMiddleware: constructor<DittyMiddleware>[] =
         Reflect.getMetadata(APPLY_MIDDLEWARE_META, endpointHandler) || [];
 
+      const endpointParamMeta: ControllerParamMeta[] =
+        Reflect.getMetadata(CONTROLLER_PARAM_META, endpointHandler) || [];
+
       router[endpoint.method](
         fullPath,
         ...controllerMiddleware.map(
@@ -78,8 +85,12 @@ export class Ditty {
             container.resolve<DittyMiddleware>(middleware).apply(req),
         ),
         (req: IttyRequest) => {
-          const handler = this.container.resolve<Handler>(Handler);
-          return handler.handle(controllerToken, endpoint, req);
+          const mapper = new ParamMapper(req);
+          const response = endpointHandler(...mapper.mapTo(endpointParamMeta));
+          return {
+            data: response,
+            status: 200,
+          };
         },
       );
 

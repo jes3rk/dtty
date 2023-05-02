@@ -1,5 +1,5 @@
 import { IRequest } from "itty-router";
-import { ControllerMethod } from "./constants";
+import { ControllerMethod, ControllerParams } from "./constants";
 
 export interface ControllerEndpointMetadata {
   path: string;
@@ -13,3 +13,15 @@ export interface RouterResponse<T = any> {
   data: T;
   status: number;
 }
+
+export type ControllerParamMeta =
+  | {
+      type: ControllerParams.BODY;
+    }
+  | {
+      type: ControllerParams.PARAM;
+      paramName?: string;
+    }
+  | {
+      type: ControllerParams.REQUEST;
+    };
