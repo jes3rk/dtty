@@ -10,7 +10,7 @@
   "dependencies": {
     "itty-router": "^3.0.12",
     "reflect-metadata": "^0.1.13",
-    "typedi": "^0.10.0"
+    "tsyringe": "^4.7.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230404.0",

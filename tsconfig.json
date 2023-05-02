@@ -6,11 +6,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "es2020",
     "sourceMap": false,
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "outDir": "dist",
     "types": ["@cloudflare/workers-types", "@types/jest"]
   },

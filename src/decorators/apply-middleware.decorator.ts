@@ -1,5 +1,5 @@
 import { APPLY_MIDDLEWARE_META } from "src/constants";
-import { Constructable } from "typedi";
+import { constructor } from "tsyringe/dist/typings/types";
 import { DittyMiddleware } from "../interfaces/middleware.interface";
 import { SetMetadata } from "./set-metadata.decorator";
 
@@ -8,5 +8,5 @@ import { SetMetadata } from "./set-metadata.decorator";
  * dependency injection support.
  */
 export const ApplyMiddleware = (
-  ...middleware: Constructable<DittyMiddleware>[]
+  ...middleware: constructor<DittyMiddleware>[]
 ) => SetMetadata(APPLY_MIDDLEWARE_META, middleware);

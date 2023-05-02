@@ -1,22 +1,10 @@
 import { IRequest } from "itty-router";
-import { Constructable } from "typedi";
+import { ControllerMethod } from "./constants";
 
 export interface ControllerEndpointMetadata {
   path: string;
   propertyKey: string | symbol;
   method: ControllerMethod;
-}
-
-export enum ControllerMethod {
-  delete = "delete",
-  get = "get",
-  post = "post",
-  put = "put",
-}
-
-export interface ContainerRef {
-  get<T>(token: Constructable<T>): T;
-  getServices(): any[];
 }
 
 export type IttyRequest = IRequest & Request;

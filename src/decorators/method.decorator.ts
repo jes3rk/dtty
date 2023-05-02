@@ -1,5 +1,5 @@
-import { CONTROLLER_ENDPOINTS_META } from "../constants";
-import { ControllerEndpointMetadata, ControllerMethod } from "../types";
+import { CONTROLLER_ENDPOINTS_META, ControllerMethod } from "../constants";
+import { ControllerEndpointMetadata } from "../types";
 
 const methodDecorator =
   ({
@@ -12,7 +12,11 @@ const methodDecorator =
         CONTROLLER_ENDPOINTS_META,
         target.constructor,
       );
-      Reflect.defineMetadata(CONTROLLER_ENDPOINTS_META, existing.concat({method, path, propertyKey}), target.constructor);
+      Reflect.defineMetadata(
+        CONTROLLER_ENDPOINTS_META,
+        existing.concat({ method, path, propertyKey }),
+        target.constructor,
+      );
     } else {
       Reflect.defineMetadata(
         CONTROLLER_ENDPOINTS_META,
