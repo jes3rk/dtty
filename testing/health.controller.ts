@@ -6,6 +6,7 @@ import { LoggerMiddleware } from "./logger.middleware";
 @ApplyMiddleware(LoggerMiddleware)
 export class HealthController {
   @Get("/")
+  @ApplyMiddleware(LoggerMiddleware)
   healthCheck() {
     return {
       status: "OK",

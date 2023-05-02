@@ -1,6 +1,5 @@
 import { ExecutionContext } from "@cloudflare/workers-types";
 import { Router, RouterType } from "itty-router";
-// import "reflect-metadata";
 import { DependencyContainer, container } from "tsyringe";
 import { constructor } from "tsyringe/dist/typings/types";
 import {
@@ -56,13 +55,25 @@ export class Ditty {
     if (!endpoints || !Array.isArray(endpoints)) return;
 
     const router = this.container.resolve<RouterType>(ROUTER_TOKEN);
+
     const controllerMiddleware: constructor<DittyMiddleware>[] =
       Reflect.getMetadata(APPLY_MIDDLEWARE_META, controllerToken) || [];
+
     endpoints.forEach((endpoint) => {
       const fullPath = rootPath + endpoint.path.replace(/$\//, "");
+
+      const endpointHandler =
+        container.resolve(controllerToken)[endpoint.propertyKey];
+      const endpointMiddleware: constructor<DittyMiddleware>[] =
+        Reflect.getMetadata(APPLY_MIDDLEWARE_META, endpointHandler) || [];
+
       router[endpoint.method](
         fullPath,
         ...controllerMiddleware.map(
+          (middleware) => (req: IttyRequest) =>
+            container.resolve<DittyMiddleware>(middleware).apply(req),
+        ),
+        ...endpointMiddleware.map(
           (middleware) => (req: IttyRequest) =>
             container.resolve<DittyMiddleware>(middleware).apply(req),
         ),
@@ -71,6 +82,7 @@ export class Ditty {
           return handler.handle(controllerToken, endpoint, req);
         },
       );
+
       this.logger.log(
         `Mounted route: [${endpoint.method.toUpperCase()}] ${fullPath}`,
       );
@@ -82,7 +94,7 @@ export class Ditty {
  * Process
  * - Global middleware
  * - Controller middleware [x]
- * - Method middleware
+ * - Method middleware [x]
  * - Method Transformer
  * - Method Validator
  * - *Method itself*
