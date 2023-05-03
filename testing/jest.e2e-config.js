@@ -6,4 +6,5 @@ module.exports = {
   rootDir: './',
   testRegex: "\\.*\\.e2e-spec\\.ts$",
   setupFilesAfterEnv: ["../jest.setup.js"],
+  maxWorkers: 1
 };

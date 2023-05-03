@@ -1,34 +1,19 @@
-import { ChildProcessWithoutNullStreams, spawn } from "child_process";
-import * as request from "supertest";
+import { UnstableDevWorker, unstable_dev } from "wrangler";
 
 describe("Index", () => {
-  const endpoint = `http://127.0.0.1:8787`;
-  let appProcess: ChildProcessWithoutNullStreams;
-  let server: typeof request;
+  let server: UnstableDevWorker;
 
-  beforeAll((done) => {
-    appProcess = spawn("yarn", ["run:local"]);
-    const startupMessages: string[] = [];
-    appProcess.stdout.on("data", (data: Buffer) => {
-      const parsed = data.toString();
-      startupMessages.push(parsed);
-      if (/Listening on/.test(parsed)) {
-        console.log(startupMessages.join(""));
-        done();
-      }
-    });
+  beforeAll(async () => {
+    server = await unstable_dev("./testing/index.ts");
   });
 
   afterAll(async () => {
-    appProcess.kill();
+    await server.stop();
   });
 
-  it("will return hello world from the index", () => {
-    return request(endpoint)
-      .get("/")
-      .expect(200)
-      .expect(({ body }) => {
-        expect(body.text).toEqual("Hello World");
-      });
+  it("will return hello world from the index", async () => {
+    const res = await server.fetch("/", { method: "GET" });
+    expect(res.status).toEqual(200);
+    expect(await res.json()).toHaveProperty("text", "Hello World");
   });
 });

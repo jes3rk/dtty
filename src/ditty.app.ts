@@ -102,6 +102,22 @@ export class Ditty {
       );
     });
   }
+
+  /**
+   * Add global middleware handlers
+   * Call this method before registering controllers
+   */
+  public setGlobalMiddleware(...handlers: constructor<DittyMiddleware>[]) {
+    container
+      .resolve<RouterType>(ROUTER_TOKEN)
+      .all(
+        "*",
+        ...handlers.map(
+          (middleware) => (req: IttyRequest) =>
+            container.resolve(middleware).apply(req),
+        ),
+      );
+  }
 }
 
 /**

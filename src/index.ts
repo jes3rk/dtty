@@ -1,5 +1,6 @@
 import "reflect-metadata";
 export { inject as Inject } from "tsyringe";
+export { ApplyMiddleware } from "./decorators/apply-middleware.decorator";
 export { Body, Param, Request } from "./decorators/contoller-params.decorator";
 export { Controller } from "./decorators/controller.decorator";
 export { Injectable } from "./decorators/injectable.decorator";
