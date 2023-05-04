@@ -9,6 +9,7 @@
     "test:e2e": "jest --config ./testing/jest.e2e-config.js"
   },
   "dependencies": {
+    "class-transformer": "^0.5.1",
     "itty-router": "^3.0.12",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.7.0"

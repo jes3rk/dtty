@@ -20,7 +20,7 @@ const methodDecorator =
     } else {
       Reflect.defineMetadata(
         CONTROLLER_ENDPOINTS_META,
-        [{ method: "get", path, propertyKey }],
+        [{ method, path, propertyKey }],
         target.constructor,
       );
     }

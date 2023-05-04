@@ -1,10 +1,10 @@
 import { ControllerParams } from "./constants";
 import { ParamMapper } from "./param-mapper";
-import { ControllerParamMeta, IttyRequest } from "./types";
+import { ControllerParamMeta, DittyRequest } from "./types";
 
 describe("ParamMapper", () => {
   let body: Record<string, unknown>;
-  let request: IttyRequest;
+  let request: DittyRequest;
   let mapper: ParamMapper;
 
   beforeEach(() => {
@@ -15,11 +15,11 @@ describe("ParamMapper", () => {
       params: {
         id: "abc",
       },
-    } as unknown as IttyRequest;
+    } as unknown as DittyRequest;
     mapper = new ParamMapper(request);
   });
 
-  it.skip("will the BODY param out", () => {
+  it("will the BODY param out", () => {
     const meta: ControllerParamMeta = {
       type: ControllerParams.BODY,
     };

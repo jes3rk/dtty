@@ -44,6 +44,7 @@ describe("Method decorators", () => {
 
       expect(Object.keys(endpointMeta[0])).toHaveLength(3);
       expect(endpointMeta[0].propertyKey).toEqual(`handle${method}`);
+      expect(endpointMeta[0].method).toEqual(method.toLowerCase());
     },
   );
 });

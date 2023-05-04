@@ -1,9 +1,9 @@
-import { Controller, Get } from "src";
+import { Body, Controller, Get } from "../src";
 
 @Controller("/")
 export class IndexController {
   @Get("/")
-  index() {
+  index(@Body() body: any) {
     return { text: "Hello World" };
   }
 }

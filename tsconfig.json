@@ -12,7 +12,11 @@
     "incremental": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "types": ["@cloudflare/workers-types", "@types/jest"]
+    "types": [
+      "@cloudflare/workers-types",
+      "@types/jest",
+      "jest-environment-miniflare/globals"
+    ]
   },
   "include": ["src", "testing"],
   "exclude": [".yarn"]

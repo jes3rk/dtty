@@ -9,4 +9,4 @@ export { Ditty } from "./ditty.app";
 export type { Logger } from "./interfaces/logger.interface";
 export type { DittyMiddleware } from "./interfaces/middleware.interface";
 export { LOGGER_TOKEN } from "./tokens";
-export type { IttyRequest } from "./types";
+export type { DittyRequest } from "./types";

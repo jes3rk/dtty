@@ -1,10 +1,12 @@
 import { ExecutionContext } from "@cloudflare/workers-types";
+import { plainToInstance } from "class-transformer";
 import { Router, RouterType } from "itty-router";
 import { Logger } from "src";
 import { container } from "tsyringe";
 import { constructor } from "tsyringe/dist/typings/types";
 import {
   APPLY_MIDDLEWARE_META,
+  BODY_TYPE,
   CONTROLLER_ENDPOINTS_META,
   CONTROLLER_META,
   CONTROLLER_PARAM_META,
@@ -17,7 +19,7 @@ import { LOGGER_TOKEN, ROUTER_TOKEN } from "./tokens";
 import {
   ControllerEndpointMetadata,
   ControllerParamMeta,
-  IttyRequest,
+  DittyRequest,
   RouterResponse,
 } from "./types";
 
@@ -33,8 +35,8 @@ export class Ditty {
 
   public async handle(
     req: Request,
-    env: Record<string, unknown>,
-    ctx: ExecutionContext,
+    env?: Record<string, unknown>,
+    ctx?: ExecutionContext,
   ): Promise<Response> {
     const router = container.resolve<RouterType>(ROUTER_TOKEN);
     const rawResponse: RouterResponse = await router.handle(req, env, ctx);
@@ -71,6 +73,7 @@ export class Ditty {
 
       const endpointHandler =
         container.resolve(controllerToken)[endpoint.propertyKey];
+
       const endpointMiddleware: constructor<DittyMiddleware>[] =
         Reflect.getMetadata(APPLY_MIDDLEWARE_META, endpointHandler) || [];
 
@@ -80,14 +83,21 @@ export class Ditty {
       router[endpoint.method](
         fullPath,
         ...controllerMiddleware.map(
-          (middleware) => (req: IttyRequest) =>
+          (middleware) => (req: DittyRequest) =>
             container.resolve<DittyMiddleware>(middleware).apply(req),
         ),
         ...endpointMiddleware.map(
-          (middleware) => (req: IttyRequest) =>
+          (middleware) => (req: DittyRequest) =>
             container.resolve<DittyMiddleware>(middleware).apply(req),
         ),
-        (req: IttyRequest) => {
+        async (req: DittyRequest) => {
+          const body = await req.json();
+
+          const Constructor =
+            Reflect.getMetadata(BODY_TYPE, endpointHandler) || Object;
+          req._internalTransformedBody = plainToInstance(Constructor, body);
+        },
+        (req: DittyRequest) => {
           const mapper = new ParamMapper(req);
           const response = endpointHandler(...mapper.mapTo(endpointParamMeta));
           return {
@@ -113,7 +123,7 @@ export class Ditty {
       .all(
         "*",
         ...handlers.map(
-          (middleware) => (req: IttyRequest) =>
+          (middleware) => (req: DittyRequest) =>
             container.resolve(middleware).apply(req),
         ),
       );
@@ -122,12 +132,12 @@ export class Ditty {
 
 /**
  * Process
- * - Global middleware
+ * - Global middleware [x]
  * - Controller middleware [x]
  * - Method middleware [x]
- * - Method Transformer
- * - Method Validator
- * - *Method itself*
+ * - Global Transformer -> class-transformer wrapper
+ * - Method Validator -> class-validator wrapper
+ * - *Method itself* [x]
  * - Method exception handler
  * - Controller exception handler
  * - Global exception handler

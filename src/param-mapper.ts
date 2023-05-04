@@ -1,10 +1,10 @@
 import { ControllerParams } from "./constants";
-import { ControllerParamMeta, IttyRequest } from "./types";
+import { ControllerParamMeta, DittyRequest } from "./types";
 
 export class ParamMapper {
-  constructor(private readonly request: IttyRequest) {}
+  constructor(private readonly request: DittyRequest) {}
 
-  private handleRequest(): IttyRequest {
+  private handleRequest(): DittyRequest {
     return this.request;
   }
 
@@ -19,6 +19,8 @@ export class ParamMapper {
   public mapTo(metadata: ControllerParamMeta[]): unknown[] {
     return metadata.map((meta) => {
       switch (meta.type) {
+        case ControllerParams.BODY:
+          return this.request._internalTransformedBody;
         case ControllerParams.PARAM:
           return this.handleParam(meta);
         case ControllerParams.REQUEST:

@@ -2,13 +2,13 @@ import {
   ApplyMiddleware,
   Controller,
   DittyMiddleware,
+  DittyRequest,
   Get,
   Injectable,
-  IttyRequest,
   Request,
 } from "../src";
 
-type MiddlewareTest = IttyRequest & { middlewareTest: MiddlewareTestingDto };
+type MiddlewareTest = DittyRequest & { middlewareTest: MiddlewareTestingDto };
 
 @Injectable()
 export class GlobalMiddleware implements DittyMiddleware {

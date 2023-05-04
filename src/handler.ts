@@ -3,7 +3,7 @@ import { constructor } from "tsyringe/dist/typings/types";
 import { Injectable } from "./decorators/injectable.decorator";
 import {
   ControllerEndpointMetadata,
-  IttyRequest,
+  DittyRequest,
   RouterResponse,
 } from "./types";
 
@@ -12,7 +12,7 @@ export class Handler {
   public async handle(
     controllerToken: constructor<any>,
     endpoint: ControllerEndpointMetadata,
-    req: IttyRequest,
+    req: DittyRequest,
   ): Promise<RouterResponse> {
     let status: number;
     let data: unknown;

@@ -1,4 +1,5 @@
 import { IRequest } from "itty-router";
+import { constructor } from "tsyringe/dist/typings/types";
 import { ControllerMethod, ControllerParams } from "./constants";
 
 export interface ControllerEndpointMetadata {
@@ -7,7 +8,10 @@ export interface ControllerEndpointMetadata {
   method: ControllerMethod;
 }
 
-export type IttyRequest = IRequest & Request;
+export type DittyRequest = IRequest &
+  Request & {
+    _internalTransformedBody: any;
+  };
 
 export interface RouterResponse<T = any> {
   data: T;
@@ -17,6 +21,7 @@ export interface RouterResponse<T = any> {
 export type ControllerParamMeta =
   | {
       type: ControllerParams.BODY;
+      bodyType?: constructor<unknown>;
     }
   | {
       type: ControllerParams.PARAM;
