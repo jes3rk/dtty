@@ -15,6 +15,7 @@ describe("ParamMapper", () => {
       params: {
         id: "abc",
       },
+      _internalTransformedBody: body,
     } as unknown as DittyRequest;
     mapper = new ParamMapper(request);
   });
@@ -25,7 +26,7 @@ describe("ParamMapper", () => {
     };
     const mapped = mapper.mapTo([meta]);
     expect(mapped).toHaveLength(1);
-    expect(mapped).toMatchObject(body);
+    expect(mapped[0]).toMatchObject(body);
   });
 
   describe("PARAM", () => {
