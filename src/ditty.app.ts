@@ -1,26 +1,26 @@
 import { ExecutionContext } from "@cloudflare/workers-types";
-import { plainToInstance } from "class-transformer";
 import { Router, RouterType } from "itty-router";
 import { Logger } from "src";
 import { container } from "tsyringe";
 import { constructor } from "tsyringe/dist/typings/types";
 import {
   APPLY_MIDDLEWARE_META,
-  BODY_TYPE,
   CONTROLLER_ENDPOINTS_META,
   CONTROLLER_META,
   CONTROLLER_PARAM_META,
 } from "./constants";
+import { ValidationException } from "./exceptions/validation.exception";
 import { DittyConfig } from "./interfaces/ditty-config.interface";
 import { DittyMiddleware } from "./interfaces/middleware.interface";
 import { DefaultLogger } from "./logger";
+import { transformerMiddlewareFactory } from "./middleware/transformer-middleware.factory";
+import { validatorMiddlewareFactory } from "./middleware/validator-middleware.factory";
 import { ParamMapper } from "./param-mapper";
 import { LOGGER_TOKEN, ROUTER_TOKEN } from "./tokens";
 import {
   ControllerEndpointMetadata,
   ControllerParamMeta,
   DittyRequest,
-  RouterResponse,
 } from "./types";
 
 export class Ditty {
@@ -39,7 +39,18 @@ export class Ditty {
     ctx?: ExecutionContext,
   ): Promise<Response> {
     const router = container.resolve<RouterType>(ROUTER_TOKEN);
-    const rawResponse: RouterResponse = await router.handle(req, env, ctx);
+    const rawResponse = await router.handle(req, env, ctx).catch((err) => {
+      if (err instanceof ValidationException) {
+        return {
+          data: err.exceptions,
+          status: 400,
+        };
+      }
+      return {
+        data: err,
+        status: 500,
+      };
+    });
     return new Response(JSON.stringify(rawResponse.data), {
       status: rawResponse.status,
       headers: {
@@ -90,13 +101,8 @@ export class Ditty {
           (middleware) => (req: DittyRequest) =>
             container.resolve<DittyMiddleware>(middleware).apply(req),
         ),
-        async (req: DittyRequest) => {
-          const body = await req.json();
-
-          const Constructor =
-            Reflect.getMetadata(BODY_TYPE, endpointHandler) || Object;
-          req._internalTransformedBody = plainToInstance(Constructor, body);
-        },
+        transformerMiddlewareFactory(endpointHandler),
+        validatorMiddlewareFactory(),
         (req: DittyRequest) => {
           const mapper = new ParamMapper(req);
           const response = endpointHandler(...mapper.mapTo(endpointParamMeta));
@@ -135,8 +141,8 @@ export class Ditty {
  * - Global middleware [x]
  * - Controller middleware [x]
  * - Method middleware [x]
- * - Global Transformer -> class-transformer wrapper
- * - Method Validator -> class-validator wrapper
+ * - Global Transformer -> class-transformer wrapper [x]
+ * - Method Validator -> class-validator wrapper [x]
  * - *Method itself* [x]
  * - Method exception handler
  * - Controller exception handler

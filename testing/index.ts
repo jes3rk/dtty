@@ -8,6 +8,7 @@ import {
   GlobalMiddlewareTestingController,
   MiddlewareTestingController,
 } from "./middleware.controller";
+import { ValidatorController } from "./validator.controller";
 
 const app = new Ditty();
 app.setGlobalMiddleware(GlobalMiddleware);
@@ -17,6 +18,7 @@ app.registerControllers(
   HealthController,
   IndexController,
   MiddlewareTestingController,
+  ValidatorController,
 );
 
 export default {
