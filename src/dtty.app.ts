@@ -46,6 +46,7 @@ export class Dtty {
           status: 400,
         };
       }
+      this.logger.error(err);
       return {
         data: err,
         status: 500,
@@ -82,8 +83,9 @@ export class Dtty {
     endpoints.forEach((endpoint) => {
       const fullPath = rootPath + endpoint.path.replace(/\/$/, "");
 
-      const endpointHandler =
-        container.resolve(controllerToken)[endpoint.propertyKey];
+      const controller = container.resolve(controllerToken);
+
+      const endpointHandler = controller[endpoint.propertyKey];
 
       const endpointMiddleware: constructor<DttyMiddleware>[] =
         Reflect.getMetadata(APPLY_MIDDLEWARE_META, endpointHandler) || [];
@@ -105,7 +107,9 @@ export class Dtty {
         validatorMiddlewareFactory(),
         (req: DttyRequest) => {
           const mapper = new ParamMapper(req);
-          const response = endpointHandler(...mapper.mapTo(endpointParamMeta));
+          const response = controller[endpoint.propertyKey](
+            ...mapper.mapTo(endpointParamMeta),
+          );
           return {
             data: response,
             status: 200,
