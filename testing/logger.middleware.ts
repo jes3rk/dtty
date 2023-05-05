@@ -1,6 +1,6 @@
 import {
-  DittyMiddleware,
-  DittyRequest,
+  DttyMiddleware,
+  DttyRequest,
   Inject,
   Injectable,
   LOGGER_TOKEN,
@@ -8,10 +8,10 @@ import {
 } from "../src";
 
 @Injectable()
-export class LoggerMiddleware implements DittyMiddleware {
+export class LoggerMiddleware implements DttyMiddleware {
   constructor(@Inject(LOGGER_TOKEN) private readonly logger: Logger) {}
 
-  apply(req: DittyRequest): void | Promise<void> {
+  apply(req: DttyRequest): void | Promise<void> {
     this.logger.log(`Incoming on ${req.url}`);
   }
 }

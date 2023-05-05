@@ -2,10 +2,10 @@ import { validate } from "class-validator";
 import { RouteHandler } from "itty-router";
 import { ControllerMethod } from "../constants";
 import { ValidationException } from "../exceptions/validation.exception";
-import { DittyRequest } from "../types";
+import { DttyRequest } from "../types";
 
 export const validatorMiddlewareFactory =
-  (): RouteHandler => async (req: DittyRequest) => {
+  (): RouteHandler => async (req: DttyRequest) => {
     if (
       req.method.toLowerCase() === ControllerMethod.get ||
       req.method.toLowerCase() === ControllerMethod.delete

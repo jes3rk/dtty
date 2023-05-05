@@ -1,10 +1,10 @@
 import { ControllerParams } from "./constants";
-import { ControllerParamMeta, DittyRequest } from "./types";
+import { ControllerParamMeta, DttyRequest } from "./types";
 
 export class ParamMapper {
-  constructor(private readonly request: DittyRequest) {}
+  constructor(private readonly request: DttyRequest) {}
 
-  private handleRequest(): DittyRequest {
+  private handleRequest(): DttyRequest {
     return this.request;
   }
 

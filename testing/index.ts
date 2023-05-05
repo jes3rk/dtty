@@ -1,5 +1,5 @@
 import { ExecutionContext } from "@cloudflare/workers-types";
-import { Ditty } from "../src";
+import { Dtty } from "../src";
 import { BodyController } from "./body.controller";
 import { HealthController } from "./health.controller";
 import { IndexController } from "./index.controller";
@@ -10,7 +10,7 @@ import {
 } from "./middleware.controller";
 import { ValidatorController } from "./validator.controller";
 
-const app = new Ditty();
+const app = new Dtty();
 app.setGlobalMiddleware(GlobalMiddleware);
 app.registerControllers(
   BodyController,

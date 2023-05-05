@@ -1,10 +1,10 @@
 import { ControllerParams } from "./constants";
 import { ParamMapper } from "./param-mapper";
-import { ControllerParamMeta, DittyRequest } from "./types";
+import { ControllerParamMeta, DttyRequest } from "./types";
 
 describe("ParamMapper", () => {
   let body: Record<string, unknown>;
-  let request: DittyRequest;
+  let request: DttyRequest;
   let mapper: ParamMapper;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe("ParamMapper", () => {
         id: "abc",
       },
       _internalTransformedBody: body,
-    } as unknown as DittyRequest;
+    } as unknown as DttyRequest;
     mapper = new ParamMapper(request);
   });
 

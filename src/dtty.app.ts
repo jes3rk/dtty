@@ -10,8 +10,8 @@ import {
   CONTROLLER_PARAM_META,
 } from "./constants";
 import { ValidationException } from "./exceptions/validation.exception";
-import { DittyConfig } from "./interfaces/ditty-config.interface";
-import { DittyMiddleware } from "./interfaces/middleware.interface";
+import { DttyConfig } from "./interfaces/ditty-config.interface";
+import { DttyMiddleware } from "./interfaces/middleware.interface";
 import { DefaultLogger } from "./logger";
 import { transformerMiddlewareFactory } from "./middleware/transformer-middleware.factory";
 import { validatorMiddlewareFactory } from "./middleware/validator-middleware.factory";
@@ -20,13 +20,13 @@ import { LOGGER_TOKEN, ROUTER_TOKEN } from "./tokens";
 import {
   ControllerEndpointMetadata,
   ControllerParamMeta,
-  DittyRequest,
+  DttyRequest,
 } from "./types";
 
-export class Ditty {
+export class Dtty {
   private logger: Logger;
 
-  constructor(config: DittyConfig = {}) {
+  constructor(config: DttyConfig = {}) {
     const { logger = DefaultLogger } = config;
     container.register(ROUTER_TOKEN, { useValue: Router() });
     container.register(LOGGER_TOKEN, { useClass: logger });
@@ -76,7 +76,7 @@ export class Ditty {
 
     const router = container.resolve<RouterType>(ROUTER_TOKEN);
 
-    const controllerMiddleware: constructor<DittyMiddleware>[] =
+    const controllerMiddleware: constructor<DttyMiddleware>[] =
       Reflect.getMetadata(APPLY_MIDDLEWARE_META, controllerToken) || [];
 
     endpoints.forEach((endpoint) => {
@@ -85,7 +85,7 @@ export class Ditty {
       const endpointHandler =
         container.resolve(controllerToken)[endpoint.propertyKey];
 
-      const endpointMiddleware: constructor<DittyMiddleware>[] =
+      const endpointMiddleware: constructor<DttyMiddleware>[] =
         Reflect.getMetadata(APPLY_MIDDLEWARE_META, endpointHandler) || [];
 
       const endpointParamMeta: ControllerParamMeta[] =
@@ -94,16 +94,16 @@ export class Ditty {
       router[endpoint.method](
         fullPath,
         ...controllerMiddleware.map(
-          (middleware) => (req: DittyRequest) =>
-            container.resolve<DittyMiddleware>(middleware).apply(req),
+          (middleware) => (req: DttyRequest) =>
+            container.resolve<DttyMiddleware>(middleware).apply(req),
         ),
         ...endpointMiddleware.map(
-          (middleware) => (req: DittyRequest) =>
-            container.resolve<DittyMiddleware>(middleware).apply(req),
+          (middleware) => (req: DttyRequest) =>
+            container.resolve<DttyMiddleware>(middleware).apply(req),
         ),
         transformerMiddlewareFactory(endpointHandler),
         validatorMiddlewareFactory(),
-        (req: DittyRequest) => {
+        (req: DttyRequest) => {
           const mapper = new ParamMapper(req);
           const response = endpointHandler(...mapper.mapTo(endpointParamMeta));
           return {
@@ -123,28 +123,15 @@ export class Ditty {
    * Add global middleware handlers
    * Call this method before registering controllers
    */
-  public setGlobalMiddleware(...handlers: constructor<DittyMiddleware>[]) {
+  public setGlobalMiddleware(...handlers: constructor<DttyMiddleware>[]) {
     container
       .resolve<RouterType>(ROUTER_TOKEN)
       .all(
         "*",
         ...handlers.map(
-          (middleware) => (req: DittyRequest) =>
+          (middleware) => (req: DttyRequest) =>
             container.resolve(middleware).apply(req),
         ),
       );
   }
 }
-
-/**
- * Process
- * - Global middleware [x]
- * - Controller middleware [x]
- * - Method middleware [x]
- * - Global Transformer -> class-transformer wrapper [x]
- * - Method Validator -> class-validator wrapper [x]
- * - *Method itself* [x]
- * - Method exception handler
- * - Controller exception handler
- * - Global exception handler
- */

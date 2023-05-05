@@ -1,17 +1,21 @@
 import {
   ApplyMiddleware,
   Controller,
-  DittyMiddleware,
-  DittyRequest,
+  DttyMiddleware,
+  DttyRequest,
   Get,
+  Inject,
   Injectable,
   Request,
 } from "../src";
+import { MiddlewareService } from "./middleware.service";
 
-type MiddlewareTest = DittyRequest & { middlewareTest: MiddlewareTestingDto };
+export type MiddlewareTest = DttyRequest & {
+  middlewareTest: MiddlewareTestingDto;
+};
 
 @Injectable()
-export class GlobalMiddleware implements DittyMiddleware {
+export class GlobalMiddleware implements DttyMiddleware {
   public apply(req: MiddlewareTest): void | Promise<void> {
     if (!req.middlewareTest) req.middlewareTest = new MiddlewareTestingDto();
     req.middlewareTest.usedGlobalMiddleware = true;
@@ -19,7 +23,7 @@ export class GlobalMiddleware implements DittyMiddleware {
 }
 
 @Injectable()
-class ClassMiddleware implements DittyMiddleware {
+class ClassMiddleware implements DttyMiddleware {
   public apply(req: MiddlewareTest): void | Promise<void> {
     if (!req.middlewareTest) req.middlewareTest = new MiddlewareTestingDto();
     req.middlewareTest.usedClassMiddleware = true;
@@ -27,7 +31,7 @@ class ClassMiddleware implements DittyMiddleware {
 }
 
 @Injectable()
-class MethodMiddleware implements DittyMiddleware {
+class MethodMiddleware implements DttyMiddleware {
   public apply(req: MiddlewareTest): void | Promise<void> {
     if (!req.middlewareTest) req.middlewareTest = new MiddlewareTestingDto();
     req.middlewareTest.usedMethodMiddleware = true;
@@ -49,9 +53,13 @@ export class MiddlewareTestingDto {
 @Controller("/middleware")
 @ApplyMiddleware(ClassMiddleware)
 export class MiddlewareTestingController {
+  constructor(
+    @Inject(MiddlewareService) private readonly service: MiddlewareService,
+  ) {}
+
   @Get("/classMiddleware")
   public classMiddleware(@Request() req: MiddlewareTest): MiddlewareTestingDto {
-    return req.middlewareTest;
+    return this.service.mapMiddlewareTest(req);
   }
 
   @Get("/classMiddleware/methodMiddleware")
@@ -59,14 +67,18 @@ export class MiddlewareTestingController {
   public methodMiddleware(
     @Request() req: MiddlewareTest,
   ): MiddlewareTestingDto {
-    return req.middlewareTest;
+    return this.service.mapMiddlewareTest(req);
   }
 }
 
 @Controller("/middleware")
 export class GlobalMiddlewareTestingController {
+  constructor(
+    @Inject(MiddlewareService) private readonly service: MiddlewareService,
+  ) {}
+
   @Get("/")
   public globalMiddleare(@Request() req: MiddlewareTest): MiddlewareTestingDto {
-    return req.middlewareTest;
+    return this.service.mapMiddlewareTest(req);
   }
 }

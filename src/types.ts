@@ -8,7 +8,7 @@ export interface ControllerEndpointMetadata {
   method: ControllerMethod;
 }
 
-export type DittyRequest = IRequest &
+export type DttyRequest = IRequest &
   Request & {
     _internalTransformedBody: any;
   };

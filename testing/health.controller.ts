@@ -1,7 +1,7 @@
 import {
   ApplyMiddleware,
   Controller,
-  DittyRequest,
+  DttyRequest,
   Get,
   Param,
   Request,
@@ -13,7 +13,7 @@ import { LoggerMiddleware } from "./logger.middleware";
 export class HealthController {
   @Get("/")
   @ApplyMiddleware(LoggerMiddleware)
-  healthCheck(@Request() req: DittyRequest) {
+  healthCheck(@Request() req: DttyRequest) {
     return {
       status: "OK",
       ev: req.method,

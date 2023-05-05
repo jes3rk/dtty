@@ -1,5 +1,5 @@
 {
-  "name": "ditty",
+  "name": "dtty",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "yarn prebuild && tsc -p tsconfig.build.json",

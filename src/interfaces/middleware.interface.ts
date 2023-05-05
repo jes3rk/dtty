@@ -1,5 +1,5 @@
-import { DittyRequest } from "../types";
+import { DttyRequest } from "../types";
 
-export interface DittyMiddleware {
-  apply(req: DittyRequest): void | Promise<void>;
+export interface DttyMiddleware {
+  apply(req: DttyRequest): void | Promise<void>;
 }
