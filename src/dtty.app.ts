@@ -106,7 +106,7 @@ export class Dtty {
         transformerMiddlewareFactory(endpointHandler),
         validatorMiddlewareFactory(),
         (req: DttyRequest) => {
-          const mapper = new ParamMapper(req);
+          const mapper = new ParamMapper(req, container.createChildContainer());
           const response = controller[endpoint.propertyKey](
             ...mapper.mapTo(endpointParamMeta),
           );

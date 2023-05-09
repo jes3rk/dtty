@@ -78,7 +78,9 @@ export class GlobalMiddlewareTestingController {
   ) {}
 
   @Get("/")
-  public globalMiddleare(@Request() req: MiddlewareTest): MiddlewareTestingDto {
+  public globalMiddleware(
+    @Request() req: MiddlewareTest,
+  ): MiddlewareTestingDto {
     return this.service.mapMiddlewareTest(req);
   }
 }

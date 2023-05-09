@@ -4,6 +4,7 @@ import {
   CONTROLLER_PARAM_META,
   ControllerParams,
 } from "../constants";
+import { DttyTransformer } from "../interfaces/transformer.interface";
 import { ControllerParamMeta } from "../types";
 import { SetMetadata } from "./set-metadata.decorator";
 
@@ -32,7 +33,10 @@ export const Body =
     );
     SetMetadata(BODY_TYPE, bodyType)(target.constructor.prototype[propertyKey]);
   };
-export const Param = (paramName?: string) =>
-  setControllerParam({ type: ControllerParams.PARAM, paramName });
+export const Param = (
+  paramName?: string,
+  transformer?: constructor<DttyTransformer<unknown>>,
+) =>
+  setControllerParam({ type: ControllerParams.PARAM, paramName, transformer });
 export const Request = (): ParameterDecorator =>
   setControllerParam({ type: ControllerParams.REQUEST });

@@ -8,6 +8,7 @@ import {
   GlobalMiddlewareTestingController,
   MiddlewareTestingController,
 } from "./middleware.controller";
+import { ParamController } from "./param.controller";
 import { ValidatorController } from "./validator.controller";
 
 const app = new Dtty();
@@ -18,6 +19,7 @@ app.registerControllers(
   HealthController,
   IndexController,
   MiddlewareTestingController,
+  ParamController,
   ValidatorController,
 );
 

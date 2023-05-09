@@ -8,5 +8,7 @@ export { Delete, Get, Post, Put } from "./decorators/method.decorator";
 export { Dtty } from "./dtty.app";
 export type { Logger } from "./interfaces/logger.interface";
 export type { DttyMiddleware } from "./interfaces/middleware.interface";
+export type { DttyTransformer } from "./interfaces/transformer.interface";
 export { LOGGER_TOKEN } from "./tokens";
+export { IntegerTransformer } from "./transformers/integer.transformer";
 export type { DttyRequest } from "./types";

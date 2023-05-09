@@ -1,8 +1,12 @@
+import { DependencyContainer } from "tsyringe";
 import { ControllerParams } from "./constants";
 import { ControllerParamMeta, DttyRequest } from "./types";
 
 export class ParamMapper {
-  constructor(private readonly request: DttyRequest) {}
+  constructor(
+    private readonly request: DttyRequest,
+    private readonly container: DependencyContainer,
+  ) {}
 
   private handleRequest(): DttyRequest {
     return this.request;
@@ -10,9 +14,14 @@ export class ParamMapper {
 
   private handleParam(
     meta: ControllerParamMeta,
-  ): undefined | string | Record<string, unknown> {
+  ): undefined | string | number | Record<string, unknown> | unknown {
     if (meta.type !== ControllerParams.PARAM) return undefined;
-    if (meta.paramName) return this.request.params[meta.paramName];
+    if (meta.paramName) {
+      const param = this.request.params[meta.paramName];
+      return meta.transformer
+        ? this.container.resolve(meta.transformer).transform(param)
+        : param;
+    }
     return this.request.params;
   }
 

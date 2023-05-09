@@ -1,6 +1,7 @@
 import { IRequest } from "itty-router";
 import { constructor } from "tsyringe/dist/typings/types";
 import { ControllerMethod, ControllerParams } from "./constants";
+import { DttyTransformer } from "./interfaces/transformer.interface";
 
 export interface ControllerEndpointMetadata {
   path: string;
@@ -26,6 +27,7 @@ export type ControllerParamMeta =
   | {
       type: ControllerParams.PARAM;
       paramName?: string;
+      transformer?: constructor<DttyTransformer<unknown>>;
     }
   | {
       type: ControllerParams.REQUEST;

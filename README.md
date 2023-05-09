@@ -52,9 +52,14 @@ app.registerControllers(
 
 Route parameters can be injected into controller methods with the `@Param()` decorator which takes an optional string to inject an individual parameter as opposed to all the parameters.
 
+Optionally, the `@Param()` decorator takes a second parameter that to parse and validate the parameter. For example, if an endpoint expects an `id` parameter of type `number` (e.g `/request/1234`), the included `IntegerTransformer` will automatically validate that the parameter is an integer and will transform the string into an integer before supplying it to the controller handler.
+
 ```ts
 @Get('/route/:id')
 getRouteById(@Param("id") id: string) {}
+
+@Get('/route/:id')
+getRouteByNumberId(@Param("id", IntegerTransformer) id: number) {}
 ```
 
 #### Body
@@ -73,7 +78,7 @@ updateRouteById(@Param('id') id: string, @Body(UpdateRouteDto) body: UpdateRoute
 - [x] Route middleware
 - [x] Global body transformer
 - [x] Global body validator
-- [ ] Route param transformer / validator
+- [x] Route param transformer / validator
 - [x] Global exception handler
 - [ ] Controller exception handler
 - [ ] Route exception handler
