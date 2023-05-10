@@ -1,8 +1,10 @@
+export const APPLY_HANDLER_META = "ah";
 export const APPLY_MIDDLEWARE_META = "m";
 export const CONTROLLER_ENDPOINTS_META = "cem";
 export const CONTROLLER_META = "cm";
 export const CONTROLLER_PARAM_META = "cp";
 export const BODY_TYPE = "bt";
+export const EXCEPTION_HANDLER_META = "ex";
 
 export enum ControllerMethod {
   delete = "delete",

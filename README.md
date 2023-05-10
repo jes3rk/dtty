@@ -80,8 +80,8 @@ updateRouteById(@Param('id') id: string, @Body(UpdateRouteDto) body: UpdateRoute
 - [x] Global body validator
 - [x] Route param transformer / validator
 - [x] Global exception handler
-- [ ] Controller exception handler
-- [ ] Route exception handler
+- [x] Controller exception handler
+- [x] Route exception handler
 - [ ] URL query param mapper
 - [ ] URL query param transformer / validator
 - [ ] Optimizations for tree shaking

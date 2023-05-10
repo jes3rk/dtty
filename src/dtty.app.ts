@@ -4,13 +4,16 @@ import { Logger } from "src";
 import { container } from "tsyringe";
 import { constructor } from "tsyringe/dist/typings/types";
 import {
+  APPLY_HANDLER_META,
   APPLY_MIDDLEWARE_META,
   CONTROLLER_ENDPOINTS_META,
   CONTROLLER_META,
   CONTROLLER_PARAM_META,
 } from "./constants";
-import { ValidationException } from "./exceptions/validation.exception";
+import { ValidationExceptionHandler } from "./exception-handlers/validation-error.handler";
+import { findBestHandler } from "./functions";
 import { DttyConfig } from "./interfaces/ditty-config.interface";
+import { ExceptionHandler } from "./interfaces/exception-handler.interface";
 import { DttyMiddleware } from "./interfaces/middleware.interface";
 import { DefaultLogger } from "./logger";
 import { transformerMiddlewareFactory } from "./middleware/transformer-middleware.factory";
@@ -25,12 +28,14 @@ import {
 
 export class Dtty {
   private logger: Logger;
+  private globalExceptionHandlers: Array<constructor<ExceptionHandler>>;
 
   constructor(config: DttyConfig = {}) {
     const { logger = DefaultLogger } = config;
     container.register(ROUTER_TOKEN, { useValue: Router() });
     container.register(LOGGER_TOKEN, { useClass: logger });
     this.logger = container.resolve(LOGGER_TOKEN);
+    this.globalExceptionHandlers = [ValidationExceptionHandler];
   }
 
   public async handle(
@@ -40,18 +45,20 @@ export class Dtty {
   ): Promise<Response> {
     const router = container.resolve<RouterType>(ROUTER_TOKEN);
     const rawResponse = await router.handle(req, env, ctx).catch((err) => {
-      if (err instanceof ValidationException) {
-        return {
-          data: err.exceptions,
-          status: 400,
-        };
-      }
+      const matchingGlobalHandler = findBestHandler(
+        err,
+        this.globalExceptionHandlers,
+        [],
+      );
+      if (matchingGlobalHandler)
+        return container.resolve(matchingGlobalHandler).handle(err);
       this.logger.error(err);
       return {
         data: err,
         status: 500,
       };
     });
+    if (!rawResponse) return new Response(undefined, { status: 404 });
     return new Response(JSON.stringify(rawResponse.data), {
       status: rawResponse.status,
       headers: {
@@ -80,6 +87,9 @@ export class Dtty {
     const controllerMiddleware: constructor<DttyMiddleware>[] =
       Reflect.getMetadata(APPLY_MIDDLEWARE_META, controllerToken) || [];
 
+    const controllerExceptionHandlers: constructor<ExceptionHandler>[] =
+      Reflect.getMetadata(APPLY_HANDLER_META, controllerToken) || [];
+
     endpoints.forEach((endpoint) => {
       const fullPath = rootPath + endpoint.path.replace(/\/$/, "");
 
@@ -89,6 +99,9 @@ export class Dtty {
 
       const endpointMiddleware: constructor<DttyMiddleware>[] =
         Reflect.getMetadata(APPLY_MIDDLEWARE_META, endpointHandler) || [];
+
+      const endpointExceptionHandlers: constructor<ExceptionHandler>[] =
+        Reflect.getMetadata(APPLY_HANDLER_META, endpointHandler) || [];
 
       const endpointParamMeta: ControllerParamMeta[] =
         Reflect.getMetadata(CONTROLLER_PARAM_META, endpointHandler) || [];
@@ -105,14 +118,31 @@ export class Dtty {
         ),
         transformerMiddlewareFactory(endpointHandler),
         validatorMiddlewareFactory(),
-        (req: DttyRequest) => {
+        async (req: DttyRequest) => {
           const mapper = new ParamMapper(req, container.createChildContainer());
-          const response = controller[endpoint.propertyKey](
-            ...mapper.mapTo(endpointParamMeta),
-          );
+          let data: unknown;
+          let status: number;
+          try {
+            data = await controller[endpoint.propertyKey](
+              ...mapper.mapTo(endpointParamMeta),
+            );
+            status = 200;
+          } catch (err) {
+            const handlerToken = findBestHandler(
+              err,
+              endpointExceptionHandlers,
+              controllerExceptionHandlers,
+            );
+            if (handlerToken) {
+              const handler = container.resolve(handlerToken);
+              return handler.handle(err);
+            } else {
+              throw err;
+            }
+          }
           return {
-            data: response,
-            status: 200,
+            data,
+            status,
           };
         },
       );
@@ -137,5 +167,11 @@ export class Dtty {
             container.resolve(middleware).apply(req),
         ),
       );
+  }
+
+  public setGlobalExceptionHandlers(
+    ...handlers: constructor<ExceptionHandler>[]
+  ) {
+    this.globalExceptionHandlers.push(...handlers);
   }
 }

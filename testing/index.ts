@@ -1,6 +1,11 @@
 import { ExecutionContext } from "@cloudflare/workers-types";
 import { Dtty } from "../src";
 import { BodyController } from "./body.controller";
+import {
+  ExceptionsController,
+  GenericHandler,
+  GlobalExceptionsController,
+} from "./exceptions.controller";
 import { HealthController } from "./health.controller";
 import { IndexController } from "./index.controller";
 import {
@@ -13,8 +18,11 @@ import { ValidatorController } from "./validator.controller";
 
 const app = new Dtty();
 app.setGlobalMiddleware(GlobalMiddleware);
+app.setGlobalExceptionHandlers(GenericHandler);
 app.registerControllers(
   BodyController,
+  ExceptionsController,
+  GlobalExceptionsController,
   GlobalMiddlewareTestingController,
   HealthController,
   IndexController,
