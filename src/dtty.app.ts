@@ -169,6 +169,9 @@ export class Dtty {
       );
   }
 
+  /**
+   * Add global exception handlers
+   */
   public setGlobalExceptionHandlers(
     ...handlers: constructor<ExceptionHandler>[]
   ) {

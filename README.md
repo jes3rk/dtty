@@ -4,7 +4,9 @@ Dependency Injection + Itty Router = dtty.
 
 Web framework for Cloudflare workers inspired by NestJS.
 
-## Usage
+## Initialization
+
+To use Dtty, simply create a new instance and let it handle all incoming requests.
 
 ```ts
 // index.ts
@@ -21,7 +23,7 @@ export default {
 };
 ```
 
-### Routing
+## Routing
 
 Controllers are registered through the `Dtty.registerControllers` method. This handles the mapping of routes and application of controller level and method level middleware.
 
@@ -48,7 +50,7 @@ app.registerControllers(
 );
 ```
 
-#### Route params
+### Route params
 
 Route parameters can be injected into controller methods with the `@Param()` decorator which takes an optional string to inject an individual parameter as opposed to all the parameters.
 
@@ -62,13 +64,42 @@ getRouteById(@Param("id") id: string) {}
 getRouteByNumberId(@Param("id", IntegerTransformer) id: number) {}
 ```
 
-#### Body
+### Body
 
 The request body can be both validated and injected into controller methods via the `@Body()` decorator. This decorator optionally takes a class constructor to perform transformation and validation via [class-transformer](https://www.npmjs.com/package/class-transformer) and [class-validator](https://www.npmjs.com/package/class-validator) respectively.
 
 ```ts
 @Put('/route/:id')
 updateRouteById(@Param('id') id: string, @Body(UpdateRouteDto) body: UpdateRouteDto) {}
+```
+
+## Exception Handling
+
+Exceptions thrown by an endpoint are caught at three levels:
+
+- Method
+- Controller
+- Global
+
+Dtty provides an interface called `ExceptionHandler` to define how classes can be used to catch and handle exceptions. The `HandleException` decorator optionally takes a parameter to filter exceptions by type to enable finer grained control over exception handling logic. For a given exception:
+
+1. Evaluate any method level exception handlers for the specific exception type
+2. Evaluate any un-filtered method level exception handlers
+3. Evaluate any controller level exception handlers for the specific exception type
+4. Evaluate any un-filtered controller level exception handlers
+5. Evaluate any global level exception handlers for the specific exception type
+6. Evaluate any un-filtered global level exception handlers
+
+If no exception handlers are found, the application will return with code `500`.
+
+```ts
+@Controller()
+@ApplyHandlers(ControllerExceptionHandler)
+export class IndexController {
+  @Get("")
+  @ApplyHandlers(MethodExceptionHandler, GenericHandler)
+  getIndex() {}
+}
 ```
 
 ## Roadmap
