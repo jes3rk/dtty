@@ -33,10 +33,30 @@ export const Body =
     );
     SetMetadata(BODY_TYPE, bodyType)(target.constructor.prototype[propertyKey]);
   };
+/**
+ * Inject the named or unnamed route parameters
+ * @param paramName
+ * @param transformer
+ * @returns
+ */
 export const Param = (
   paramName?: string,
   transformer?: constructor<DttyTransformer<unknown>>,
 ) =>
   setControllerParam({ type: ControllerParams.PARAM, paramName, transformer });
+
+/**
+ * Inject the named or unnamed query parameters with optional
+ * transformation and validation
+ */
+export const Query = (
+  params:
+    | { paramName: string; transformer?: constructor<DttyTransformer<unknown>> }
+    | { paramsType?: constructor<unknown> } = {},
+) => setControllerParam({ type: ControllerParams.QUERY, ...params });
+
+/**
+ * Inject the request object
+ */
 export const Request = (): ParameterDecorator =>
   setControllerParam({ type: ControllerParams.REQUEST });

@@ -14,6 +14,7 @@ import {
   MiddlewareTestingController,
 } from "./middleware.controller";
 import { ParamController } from "./param.controller";
+import { QueryParamController } from "./query-param.controller";
 import { ValidatorController } from "./validator.controller";
 
 const app = new Dtty();
@@ -28,6 +29,7 @@ app.registerControllers(
   IndexController,
   MiddlewareTestingController,
   ParamController,
+  QueryParamController,
   ValidatorController,
 );
 

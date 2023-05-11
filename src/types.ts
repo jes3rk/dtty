@@ -30,5 +30,14 @@ export type ControllerParamMeta =
       transformer?: constructor<DttyTransformer<unknown>>;
     }
   | {
+      type: ControllerParams.QUERY;
+      paramName: string;
+      transformer?: constructor<DttyTransformer<unknown>>;
+    }
+  | {
+      type: ControllerParams.QUERY;
+      paramsType?: constructor<unknown>;
+    }
+  | {
       type: ControllerParams.REQUEST;
     };

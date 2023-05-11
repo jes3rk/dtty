@@ -64,6 +64,34 @@ getRouteById(@Param("id") id: string) {}
 getRouteByNumberId(@Param("id", IntegerTransformer) id: number) {}
 ```
 
+### Query Params
+
+Much like route parameters, query parameters can be injected into the controller with the `@Query()` decorator. The decorator takes a configuration object to inject either an individual parameter or all the parameters with optional transformation and validation.
+
+When working with `esbuild`, some of the metadata that typescript emits and `class-transformer` relies upon is missing. Therefore, all class properties should be decorated with the `@Type` decorator to manually specify the type of the field.
+
+```ts
+  @Get('/named')
+  handleNamedParam(@Query({paramName: "test"}) value: string) {
+    // maps the parameter named `test` out without transformation
+  }
+
+  @Get('/unnamed')
+  handleUnnamed(@Query() values: Record<string, unknown>) {
+    // maps all the query parameters out without transformation or validation
+  }
+
+  @Get('/named/transformed')
+  handleNamedAndTransformed(@Query({paramName: "test", transformer: IntegerTransformer}) value: number) {
+    // maps the parameter named `test` out and transforms into an integer
+  }
+
+  @Get('/unnamed/validated')
+  handleUnnamedAndValidated(@Query({paramsType: QueryDto}) values: QueryDto) {
+    // maps all the query parameters out and transforms and validates against a class definition
+  }
+```
+
 ### Body
 
 The request body can be both validated and injected into controller methods via the `@Body()` decorator. This decorator optionally takes a class constructor to perform transformation and validation via [class-transformer](https://www.npmjs.com/package/class-transformer) and [class-validator](https://www.npmjs.com/package/class-validator) respectively.
@@ -113,6 +141,6 @@ export class IndexController {
 - [x] Global exception handler
 - [x] Controller exception handler
 - [x] Route exception handler
-- [ ] URL query param mapper
-- [ ] URL query param transformer / validator
+- [x] URL query param mapper
+- [x] URL query param transformer / validator
 - [ ] Optimizations for tree shaking

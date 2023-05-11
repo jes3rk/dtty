@@ -16,6 +16,7 @@ export enum ControllerMethod {
 export enum ControllerParams {
   BODY = "b",
   PARAM = "p",
+  QUERY = "q",
   REQUEST = "r",
 }
 
