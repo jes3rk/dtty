@@ -56,6 +56,11 @@ Route parameters can be injected into controller methods with the `@Param()` dec
 
 Optionally, the `@Param()` decorator takes a second parameter that to parse and validate the parameter. For example, if an endpoint expects an `id` parameter of type `number` (e.g `/request/1234`), the included `IntegerTransformer` will automatically validate that the parameter is an integer and will transform the string into an integer before supplying it to the controller handler.
 
+#### Included Transformers
+
+- IntegerTransformer
+- UuidTransformer
+
 ```ts
 @Get('/route/:id')
 getRouteById(@Param("id") id: string) {}

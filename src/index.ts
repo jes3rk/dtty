@@ -19,4 +19,5 @@ export type { DttyMiddleware } from "./interfaces/middleware.interface";
 export type { DttyTransformer } from "./interfaces/transformer.interface";
 export { LOGGER_TOKEN } from "./tokens";
 export { IntegerTransformer } from "./transformers/integer.transformer";
+export { UuidTransformer } from "./transformers/uuid.transformer";
 export type { DttyRequest, RouterResponse } from "./types";
