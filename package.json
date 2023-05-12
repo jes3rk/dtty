@@ -1,5 +1,13 @@
 {
   "name": "dtty",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jes3rk/dtty"
+  },
+  "license": "MIT",
+  "author": "Joseph Schefer",
+  "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "yarn prebuild && tsc -p tsconfig.build.json",
