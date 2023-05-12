@@ -144,3 +144,6 @@ export class IndexController {
 - [x] URL query param mapper
 - [x] URL query param transformer / validator
 - [ ] Optimizations for tree shaking
+- [ ] Custom DI library
+- [x] UUID transformer
+- [ ] Async constructors
