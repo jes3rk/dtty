@@ -46,7 +46,7 @@
     "supertest": "^6.3.3",
     "typescript": "^5.0.4",
     "uuid": "^9.0.0",
-    "wrangler": "^2.17.0"
+    "wrangler": "^2.20.0"
   },
   "packageManager": "yarn@3.5.0"
 }
