@@ -2513,7 +2513,7 @@ __metadata:
     tsyringe: ^4.7.0
     typescript: ^5.0.4
     uuid: ^9.0.0
-    wrangler: ^3.0.0
+    wrangler: ^3.0.1
   languageName: unknown
   linkType: soft
 
@@ -6266,9 +6266,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wrangler@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "wrangler@npm:3.0.0"
+"wrangler@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "wrangler@npm:3.0.1"
   dependencies:
     "@cloudflare/kv-asset-handler": ^0.2.0
     "@esbuild-plugins/node-globals-polyfill": ^0.1.1
@@ -6289,7 +6289,7 @@ __metadata:
   bin:
     wrangler: bin/wrangler.js
     wrangler2: bin/wrangler.js
-  checksum: 6507fd8cb652e298c086912b157302d98f17682f0d87a5fc9f006edf1b4887a52d26348ef4a968a7ce91741743d11966afa36ccc5cb79e8f07175aebc693a1e0
+  checksum: 7970d31b5fe8c9266f1fb2351eaec34cd714338613cd360959ed4559f73ec3037069a0ce821119579d707e920050465dd039780776322f9b853ba4c64b97d6cb
   languageName: node
   linkType: hard
 
