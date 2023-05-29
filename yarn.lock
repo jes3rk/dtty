@@ -2501,7 +2501,7 @@ __metadata:
     eslint-config-prettier: ^8.8.0
     eslint-plugin-prettier: ^4.2.1
     husky: ^8.0.3
-    itty-router: ^3.0.12
+    itty-router: ^4.0.6
     jest: ^29.5.0
     lint-staged: ^13.2.2
     prettier: ^2.8.8
@@ -3733,10 +3733,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"itty-router@npm:^3.0.12":
-  version: 3.0.12
-  resolution: "itty-router@npm:3.0.12"
-  checksum: aedc7d66e5606bc57a503a0386cb80083b5adc863de2a634676223c84c8106087db7a53155119d47b86f501278dab60f5758d386f1a0b72b7e15589a3b588a65
+"itty-router@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "itty-router@npm:4.0.6"
+  checksum: c196607e918a393f3e2ef35e580cbf1d9e1787d693f0f84217a2af7053c516f2284d13894edfba5ffd256efb69404016b9eb1182226e4c2451a4d07c8f08f115
   languageName: node
   linkType: hard
 
