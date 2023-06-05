@@ -20,7 +20,7 @@
   "dependencies": {
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "itty-router": "^3.0.12",
+    "itty-router": "^4.0.9",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.7.0"
   },
