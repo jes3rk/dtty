@@ -2558,7 +2558,7 @@ __metadata:
     tsyringe: ^4.7.0
     typescript: ^5.0.4
     uuid: ^9.0.0
-    wrangler: ^3.0.1
+    wrangler: ^3.1.1
   languageName: unknown
   linkType: soft
 
@@ -4618,9 +4618,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"miniflare@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "miniflare@npm:3.0.0"
+"miniflare@npm:^3.0.1":
+  version: 3.0.2
+  resolution: "miniflare@npm:3.0.2"
   dependencies:
     acorn: ^8.8.0
     acorn-walk: ^8.2.0
@@ -4637,7 +4637,7 @@ __metadata:
     ws: ^8.11.0
     youch: ^3.2.2
     zod: ^3.20.6
-  checksum: 30a1bf4d6f1a7cb39ed57cebaf6d863c00af7b673b6bdfc14974986f0f4ab5c08a264d2b09c8bfb14f389f79af4c72ad4da58a51a66515f58826fc51b7a66065
+  checksum: 9a210b17dc06db6972c206040878bd35bedd6fe921cfcd9b882b09d33ddf1e789447ff689adb18733d87131db2da97acd05d7c5bb9d035503df84d7c5413315a
   languageName: node
   linkType: hard
 
@@ -6311,9 +6311,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wrangler@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "wrangler@npm:3.0.1"
+"wrangler@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "wrangler@npm:3.1.1"
   dependencies:
     "@cloudflare/kv-asset-handler": ^0.2.0
     "@esbuild-plugins/node-globals-polyfill": ^0.1.1
@@ -6322,7 +6322,7 @@ __metadata:
     chokidar: ^3.5.3
     esbuild: 0.16.3
     fsevents: ~2.3.2
-    miniflare: ^3.0.0
+    miniflare: ^3.0.1
     nanoid: ^3.3.3
     path-to-regexp: ^6.2.0
     selfsigned: ^2.0.1
@@ -6334,7 +6334,7 @@ __metadata:
   bin:
     wrangler: bin/wrangler.js
     wrangler2: bin/wrangler.js
-  checksum: 7970d31b5fe8c9266f1fb2351eaec34cd714338613cd360959ed4559f73ec3037069a0ce821119579d707e920050465dd039780776322f9b853ba4c64b97d6cb
+  checksum: f93c2690653ff85eb45fda73ccf17ddf86d3a72e488b487ab83adf7884736df366e4f661325f7f2ec2c0a6587dd145bf1c72710f8a791c1412787d4ca29ca639
   languageName: node
   linkType: hard
 
