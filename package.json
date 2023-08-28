@@ -22,7 +22,7 @@
     "class-validator": "^0.14.0",
     "itty-router": "^4.0.22",
     "reflect-metadata": "^0.1.13",
-    "tsyringe": "^4.7.0"
+    "tsyringe": "^4.8.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230518.0",
