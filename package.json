@@ -30,7 +30,7 @@
     "@swc/jest": "^0.2.26",
     "@types/jest": "^29.5.2",
     "@types/supertest": "^2.0.12",
-    "@types/uuid": "^9.0.2",
+    "@types/uuid": "^9.0.4",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^6.4.1",
     "eslint": "^8.43.0",
@@ -45,7 +45,7 @@
     "sort-package-json": "^2.5.1",
     "supertest": "^6.3.3",
     "typescript": "^5.1.6",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "wrangler": "^3.1.1"
   },
   "packageManager": "yarn@3.5.0"
