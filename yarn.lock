@@ -454,10 +454,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/workers-types@npm:^4.20230518.0":
-  version: 4.20230518.0
-  resolution: "@cloudflare/workers-types@npm:4.20230518.0"
-  checksum: 69c861437f1064b860b2a52129ed973f670090a8d2de9f4b205f86f8a2f40caec48b8c7614533c6531875d1fa254fc7d9da3ab52d7a6fff46be0f64079b394dc
+"@cloudflare/workers-types@npm:^4.20231025.0":
+  version: 4.20231025.0
+  resolution: "@cloudflare/workers-types@npm:4.20231025.0"
+  checksum: 74aa5c62f7bd82d78c38bcc7aceed898e8d6bab6569323d6424e816686d9bd324fc8e841c35699ec13b1dc72909884e152191caf09ba377d814b2cc6b1800fa5
   languageName: node
   linkType: hard
 
@@ -2541,7 +2541,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dtty@workspace:."
   dependencies:
-    "@cloudflare/workers-types": ^4.20230518.0
+    "@cloudflare/workers-types": ^4.20231025.0
     "@swc/core": ^1.3.80
     "@swc/jest": ^0.2.26
     "@types/jest": ^29.5.2
